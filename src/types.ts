@@ -1,0 +1,1 @@
+export type PromptVar={original:string;label:string;group:string;hint:string};export type Prompt={id:number;name:string;category:string;description:string;template:string;favorite:number;created_at:string;updated_at:string;vars:PromptVar[]};export type Version={id:number;prompt_id:number;version:number;template:string;created_at:string;note:string};
