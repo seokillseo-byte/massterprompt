@@ -16,6 +16,47 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
         run: npm install
+      - name: Generate Windows application icon
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          New-Item -ItemType Directory -Force -Path "src-tauri/icons" | Out-Null
+          $bitmap = New-Object System.Drawing.Bitmap 256, 256
+          $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+          $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+          $graphics.Clear([System.Drawing.Color]::FromArgb(91, 80, 232))
+          $font = New-Object System.Drawing.Font("Arial", 142, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
+          $brush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
+          $measure = $graphics.MeasureString("M", $font)
+          $x = (256 - $measure.Width) / 2
+          $y = (256 - $measure.Height) / 2 - 8
+          $graphics.DrawString("M", $font, $brush, $x, $y)
+          $stream = New-Object System.IO.MemoryStream
+          $bitmap.Save($stream, [System.Drawing.Imaging.ImageFormat]::Png)
+          [byte[]]$png = $stream.ToArray()
+          $icoStream = New-Object System.IO.MemoryStream
+          $writer = New-Object System.IO.BinaryWriter($icoStream)
+          $writer.Write([UInt16]0)
+          $writer.Write([UInt16]1)
+          $writer.Write([UInt16]1)
+          $writer.Write([byte]0)
+          $writer.Write([byte]0)
+          $writer.Write([byte]0)
+          $writer.Write([byte]0)
+          $writer.Write([UInt16]1)
+          $writer.Write([UInt16]32)
+          $writer.Write([UInt32]$png.Length)
+          $writer.Write([UInt32]22)
+          $writer.Write($png)
+          [System.IO.File]::WriteAllBytes("src-tauri/icons/icon.ico", $icoStream.ToArray())
+          $writer.Dispose()
+          $icoStream.Dispose()
+          $stream.Dispose()
+          $brush.Dispose()
+          $font.Dispose()
+          $graphics.Dispose()
+          $bitmap.Dispose()
+          Write-Host "Generated src-tauri/icons/icon.ico"
       - name: Build Tauri installers
         run: npm run tauri -- build
       - name: Upload installer artifacts
