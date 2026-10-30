@@ -1,0 +1,1 @@
+fn main(){master_prompt_manager_lib::run()}
