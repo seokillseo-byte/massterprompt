@@ -2,17 +2,37 @@
 
 Ứng dụng desktop Windows quản lý thư viện Master Prompt, xây dựng bằng Tauri 2 + React + TypeScript và SQLite.
 
-> Trạng thái: khởi tạo repository. Chưa phải bản phát hành ổn định; cần hoàn thiện, build và kiểm thử trước khi phát hành installer.
+## Trạng thái hiện tại
 
-## Mục tiêu
-- Quản lý Prompt, danh mục, tìm kiếm và yêu thích.
-- Thay biến trong Prompt và xem trước nội dung.
-- Lưu dữ liệu cục bộ bằng SQLite.
-- Sao lưu/khôi phục JSON và quản lý lịch sử phiên bản.
-- Tạo Windows NSIS `.exe` và MSI qua GitHub Actions.
+Đây là bản khởi tạo đang được kiểm tra trên GitHub Actions. Chưa phát hành installer ổn định và chưa được kiểm thử trên máy Windows người dùng.
 
-## Build
-Yêu cầu Node.js 20+ và Rust stable. Trên Windows runner, GitHub Actions sẽ cài WebView2/Tauri dependencies, build installer và đính kèm installer vào GitHub Release khi push tag `v*`.
+## Chức năng đã có trong mã nguồn
 
-## Trạng thái triển khai
-Các tính năng và installer chỉ được coi là hoàn thành sau khi CI thành công và gói cài đặt được kiểm thử thực tế.
+- Thêm, sửa, xóa Master Prompt.
+- Phân loại, tìm kiếm và đánh dấu yêu thích.
+- Tự nhận diện biến `[Tên biến]` và `<<Tên biến>>`.
+- Nhập giá trị biến, xem trước và sao chép Prompt.
+- Sao lưu và nhập thư viện Prompt bằng JSON.
+- Lưu Prompt và lịch sử phiên bản trong SQLite.
+- Khôi phục phiên bản Prompt.
+
+## Công nghệ
+
+- Tauri 2 / Rust
+- React / TypeScript / Vite
+- SQLite qua `@tauri-apps/plugin-sql`
+
+## Build tự động
+
+Workflow `.github/workflows/release.yml` chạy build Windows khi có push lên nhánh `main` hoặc tag `v*`. Khi build từ tag, workflow đính kèm các gói NSIS `.exe` và MSI vào GitHub Release.
+
+## Các phần còn cần hoàn thiện
+
+- Workflow Builder và lưu workflow bằng SQLite.
+- Kiểm thử import/export dữ liệu, lịch sử phiên bản và khôi phục trên Windows.
+- Bổ sung icon ứng dụng và hoàn thiện giao diện.
+- Chạy CI thành công, kiểm thử installer rồi mới phát hành bản tải chính thức.
+
+## Lưu ý
+
+Không xem bản mã nguồn hiện tại là sản phẩm hoàn thiện. Chỉ thông báo có file cài đặt khi GitHub Actions đã tạo gói thành công và Release có asset tải được.
